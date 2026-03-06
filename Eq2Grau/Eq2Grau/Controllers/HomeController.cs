@@ -9,11 +9,11 @@ namespace Eq2Grau.Controllers
         /// <summary>
         /// calcula das raízes de uma eq. 2º Grau
         /// </summary>
-        /// <param name="a">parâmetro do x^2</param>
-        /// <param name="b">parâmetro do x</param>
-        /// <param name="c">parâmetro independente</param>
+        /// <param name="A">parâmetro do x^2</param>
+        /// <param name="B">parâmetro do x</param>
+        /// <param name="C">parâmetro independente</param>
         /// <returns>vista</returns>
-        public IActionResult Index(String a, String b, String c)
+        public IActionResult Index(float A, float B, float C)
         {
             /*
                 Algoritmo:
@@ -34,52 +34,39 @@ namespace Eq2Grau.Controllers
 
              */
 
-            //2.1
-            if (!float.TryParse(a, out float A))
+            if (Request.Method == "POST")
             {
-                // A não é número
-                // falta ainda gerar a mensagem de erro, para ajudar o utilizador a corrigir o problema
-                return View();
-            }
+                //2.2
+                if (A == 0)
+                {
+                    ViewBag.Erro = "Parâmetro A não pode ser zero!";
+                    return View();
+                }
 
-            if (!float.TryParse(b, out float B))
-            {
-                // B não é número
-                // falta ainda gerar a mensagem de erro, para ajudar o utilizador a corrigir o problema
-                return View();
-            }
+                //3.1
+                float delta = B * B - 4 * A * C;
 
-            if (!float.TryParse(c, out float C))
-            {
-                // C não é número
-                // falta ainda gerar a mensagem de erro, para ajudar o utilizador a corrigir o problema
-                return View();
-            }
+                //3.2
+                if (delta >= 0)
+                {
+                    //3.2.1
+                    double x1 = (-B + Math.Sqrt(delta)) / (2 * A);
+                    double x2 = (-B - Math.Sqrt(delta)) / (2 * A);
 
-            //2.2
-            if(A == 0)
-            {
-                return View();
-            }
+                    //3.4
+                    ViewBag.X1 = "X1 = " + x1;
+                    ViewBag.X2 = "X2 = " + x2;
+                }
+                //3.3
+                else
+                {
+                    double x_r = -B / (2 * A);
+                    double x_i = Math.Sqrt((delta * (-1))) / (2 * A);
 
-            //3.1
-            float delta = B * B - 4 * A * C;
-
-            //3.2
-            if (delta >= 0)
-            {
-                //3.2.1
-                double x1 = (-B + Math.Sqrt(delta))/(2*A);
-                double x2 = (-B - Math.Sqrt(delta)) / (2 * A);
-
-                //3.4
-                ViewBag.X1 = x1;
-                ViewBag.X2 = x2;
-            }
-
-            //3.3
-            if (delta < 0)
-            {
+                    ViewBag.Erro = "Raizes complexas";
+                    ViewBag.X1 = "X1 = " + x_r + "-" + x_i + "i";
+                    ViewBag.X2 = "X2 = " + x_r + "+" + x_i + "i";
+                }
 
             }
 
